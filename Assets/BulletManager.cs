@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 public class BulletManager
@@ -11,7 +12,7 @@ public class BulletManager
     //Step 2. Make the Constructor Private
     private BulletManager()
     {
-
+        Setup();
     }
 
     //Step 3. Public Static Creational Method
@@ -36,18 +37,23 @@ public class BulletManager
     [SerializeField]
     private int _enemyBulletTotal = 50;
 
-    Queue<GameObject> _playerBulletPool = new Queue<GameObject>();
-    Queue<GameObject> _enemyBulletPool = new Queue<GameObject>();
+    List<Queue<GameObject>> _bulletPools;
 
-    GameObject _bulletPrefab;
+/*    Queue<GameObject> _playerBulletPool = new Queue<GameObject>();
+    Queue<GameObject> _enemyBulletPool = new Queue<GameObject>();*/
+
+
     // Start is called before the first frame update
-    void Start()
+    void Setup()
     {
-        _bulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet");
-       /* _factory = FindAnyObjectByType<BulletFactory>();*/
-       
+        _bulletPools = new List<Queue<GameObject>>();
 
-
+        // Creates conteiners of each pool into list of bullet pools
+        for(int numberOfBulletTypes = 0; numberOfBulletTypes < (int)BulletType.NUMBER_OF_BULLET_TYPES; numberOfBulletTypes++)
+        {
+            _bulletPools.Add(new Queue<GameObject>());
+        }
+        
         PoolBuilder();
     }
 
@@ -56,94 +62,32 @@ public class BulletManager
         // take how many bullet we want
         // Create that amount of bullet
 
-        for (int i = 0; i < _playerBulletTotal; i++)
+        for(int i = 0; i < _bulletPools.Count; i++)
         {
-            //Create a bullet
-            GameObject bullet = BulletFactory.Instance().CreateBullet(BulletType.PLAYERBULLET); //_factory.CreateBullet(BulletType.PLAYERBULLET);
-            _playerBulletPool.Enqueue(bullet);
+            for(int bulletAmount = 0; bulletAmount < 50; bulletAmount++)
+            {
+                _bulletPools[i].Enqueue(BulletFactory.Instance().CreateBullet((BulletType)i));
+            }
         }
-        for (int i = 0; i < _enemyBulletTotal; i++)
-        {
-            //Create an enemy bullet and add to enemy bullet queue
-            GameObject bullet = BulletFactory.Instance().CreateBullet(BulletType.ENEMYBULLET);
-            _enemyBulletPool.Enqueue(bullet);
-        }
-
-
-
     }
-
-/*    void CreateBullet()
-    {
-        GameObject bullet = Instantiate(_bulletPrefab);
-        bullet.transform.parent = transform;
-        bullet.SetActive(false);
-        _bulletPool.Enqueue(bullet);
-
-    }*/
 
     public GameObject GetBullet(BulletType type)
     {
-        GameObject bullet;
-        switch (type)
-        {
-            case BulletType.PLAYERBULLET:
-                //give player bullet
-                if(_playerBulletPool.Count <= 1)
-                {
-                    _playerBulletPool.Enqueue(BulletFactory.Instance().CreateBullet(BulletType.PLAYERBULLET));
-                }
+        if (_bulletPools[(int)type].Count < 1)
+            _bulletPools[(int)type].Enqueue(BulletFactory.Instance().CreateBullet(type));
 
-                bullet = _playerBulletPool.Dequeue();
-
-                break;
-            case BulletType.ENEMYBULLET:
-                //give enemy bullet
-                if(_enemyBulletPool.Count <= 1)
-                {
-                    _enemyBulletPool.Enqueue(BulletFactory.Instance().CreateBullet(BulletType.ENEMYBULLET));
-                }
-
-                bullet = _enemyBulletPool.Dequeue();
-                break;
-            default:
-                Debug.LogError("Bullet type that asking from pool doesn't exist");
-                return null;
-                break;
-        }
+        GameObject bullet = _bulletPools[(int)type].Dequeue();
 
         bullet.SetActive(true);
         return bullet;
-
-
-        /*        bullet.transform.localEulerAngles = rotation;
-
-                bullet.tag = tagName;
-
-                bullet.transform.position = pos;
-                bullet.GetComponent<BulletBehavior>().SetDirection(dir);
-                bullet.GetComponent<SpriteRenderer>().color = col;*/
-
 
     }
 
     public void ReturnBullet(GameObject bullet)
     {
-       
 
-        switch(bullet.GetComponent<BulletBehavior>()._type)
-        {
-            case BulletType.PLAYERBULLET:
-                _playerBulletPool.Enqueue(bullet);
-                break;
-            case BulletType.ENEMYBULLET:
-                _enemyBulletPool.Enqueue(bullet);
-                break;
-            default:
-                Debug.Log("The type of bullet you want to return is not exist");
-                break;
-        }
-
+        _bulletPools[(int)bullet.GetComponent<BulletBehavior>()._type].Enqueue(bullet);
         bullet.SetActive(false);
+
     }
 }

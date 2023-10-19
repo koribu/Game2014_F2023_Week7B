@@ -23,33 +23,30 @@ public class BulletFactory
 
 
 
-    GameObject _bulletPrefab;
+    GameObject _playerBulletPrefab, _enemyBulletPrefab;
    /* [SerializeField]
     Sprite _playerBulletSprite, _enemyBulletSprite;*/
     // Start is called before the first frame update
     void Setup()
     {
-        _bulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet");
+        _playerBulletPrefab = Resources.Load<GameObject>("Prefabs/PlayerBullet");
+        _enemyBulletPrefab = Resources.Load<GameObject>("Prefabs/EnemyBullet");
 
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 
     public GameObject CreateBullet(BulletType type)
     {
 
-        GameObject bullet = MonoBehaviour.Instantiate(_bulletPrefab);
-        bullet.SetActive(false);
+        GameObject bullet ;
+
 
         switch(type)
         {
             case BulletType.PLAYERBULLET:
                 //Customize bullet for player bullet
-              //  bullet.GetComponent<SpriteRenderer>().sprite = _playerBulletSprite;
+                bullet = MonoBehaviour.Instantiate(_playerBulletPrefab);
+
                 bullet.GetComponent<BulletBehavior>().SetDirection(Vector3.up);
                 bullet.GetComponent<BulletBehavior>()._type = BulletType.PLAYERBULLET;
 
@@ -57,7 +54,8 @@ public class BulletFactory
                 break;
             case BulletType.ENEMYBULLET:
                 //Customize bullet for enemy bullet
-              //  bullet.GetComponent<SpriteRenderer>().sprite = _enemyBulletSprite;
+                bullet = MonoBehaviour.Instantiate(_enemyBulletPrefab);
+
                 bullet.GetComponent<BulletBehavior>().SetDirection(Vector3.down);
                 bullet.GetComponent<BulletBehavior>()._type = BulletType.ENEMYBULLET;
 
@@ -69,6 +67,7 @@ public class BulletFactory
                 break;
         }
 
+        bullet.SetActive(false);
         return bullet;
     }
 }

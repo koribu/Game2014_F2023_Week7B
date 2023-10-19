@@ -5,5 +5,6 @@ using UnityEngine;
 public enum BulletType
 {
     PLAYERBULLET,
-    ENEMYBULLET
+    ENEMYBULLET,
+    NUMBER_OF_BULLET_TYPES
 }
