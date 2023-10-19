@@ -15,20 +15,13 @@ public class BulletBehavior : MonoBehaviour
 
     public BulletType _type;
 
-    BulletManager _manager;
-    // Start is called before the first frame update
-    void Start()
-    {
-        _manager = FindAnyObjectByType<BulletManager>();
-    }
-
     // Update is called once per frame
     void Update()
     {
         transform.position += _direction * _speed * Time.deltaTime;
 
         if (transform.position.y > _boundries.max || transform.position.y < _boundries.min)
-            _manager.ReturnBullet(gameObject);
+            BulletManager.Instance().ReturnBullet(gameObject);
     }
 
     public void SetDirection(Vector3 dir)
