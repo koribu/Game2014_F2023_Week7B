@@ -10,6 +10,7 @@ public class BulletFactory
     private BulletFactory()
     {
         // The stuff that we want to do at start of the project
+        Setup();
     }
 
     public static BulletFactory Instance()
@@ -26,7 +27,7 @@ public class BulletFactory
    /* [SerializeField]
     Sprite _playerBulletSprite, _enemyBulletSprite;*/
     // Start is called before the first frame update
-    void Start()
+    void Setup()
     {
         _bulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet");
 

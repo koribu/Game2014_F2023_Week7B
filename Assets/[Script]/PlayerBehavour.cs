@@ -124,7 +124,7 @@ public class PlayerBehavour : MonoBehaviour
             if(collision.GetComponent<BulletBehavior>()._type == BulletType.ENEMYBULLET)
             {
                 _gameController.ChangeScore(-7);
-                _bulletManager.ReturnBullet(collision.gameObject);
+                BulletManager.Instance().ReturnBullet(collision.gameObject);
                 // collision.gameObject.GetComponent<EnemyBehavior>().DyingSequence();
                 Debug.Log("I Got HIT!!!");
             }
