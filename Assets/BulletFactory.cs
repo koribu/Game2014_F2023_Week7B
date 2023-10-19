@@ -2,11 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletFactory : MonoBehaviour
+public class BulletFactory
 {
+    /************************SINGLETON SECTION***************************/
+    private static BulletFactory instance;
+
+    private BulletFactory()
+    {
+        // The stuff that we want to do at start of the project
+    }
+
+    public static BulletFactory Instance()
+    {
+        return instance ??= new BulletFactory();
+    }
+
+
+    /************************SINGLETON SECTION***************************/
+
+
+
     GameObject _bulletPrefab;
-    [SerializeField]
-    Sprite _playerBulletSprite, _enemyBulletSprite;
+   /* [SerializeField]
+    Sprite _playerBulletSprite, _enemyBulletSprite;*/
     // Start is called before the first frame update
     void Start()
     {
@@ -23,14 +41,14 @@ public class BulletFactory : MonoBehaviour
     public GameObject CreateBullet(BulletType type)
     {
 
-        GameObject bullet = Instantiate(_bulletPrefab);
+        GameObject bullet = MonoBehaviour.Instantiate(_bulletPrefab);
         bullet.SetActive(false);
 
         switch(type)
         {
             case BulletType.PLAYERBULLET:
                 //Customize bullet for player bullet
-                bullet.GetComponent<SpriteRenderer>().sprite = _playerBulletSprite;
+              //  bullet.GetComponent<SpriteRenderer>().sprite = _playerBulletSprite;
                 bullet.GetComponent<BulletBehavior>().SetDirection(Vector3.up);
                 bullet.GetComponent<BulletBehavior>()._type = BulletType.PLAYERBULLET;
 
@@ -38,7 +56,7 @@ public class BulletFactory : MonoBehaviour
                 break;
             case BulletType.ENEMYBULLET:
                 //Customize bullet for enemy bullet
-                bullet.GetComponent<SpriteRenderer>().sprite = _enemyBulletSprite;
+              //  bullet.GetComponent<SpriteRenderer>().sprite = _enemyBulletSprite;
                 bullet.GetComponent<BulletBehavior>().SetDirection(Vector3.down);
                 bullet.GetComponent<BulletBehavior>()._type = BulletType.ENEMYBULLET;
 

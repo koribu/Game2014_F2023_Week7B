@@ -18,7 +18,6 @@ public class PlayerBehavour : MonoBehaviour
     bool _isMobilePlatform = false;
 
     GameController _gameController;
-    BulletManager _bulletManager;
 
     GameObject _bullet;
 
@@ -37,8 +36,6 @@ public class PlayerBehavour : MonoBehaviour
                             Application.platform == RuntimePlatform.IPhonePlayer;
 
         _gameController = FindObjectOfType<GameController>();
-        _bulletManager = FindObjectOfType<BulletManager>();
-
      
     }
 
@@ -62,7 +59,7 @@ public class PlayerBehavour : MonoBehaviour
         if(count > 10)
         {
   
-           GameObject bullet = _bulletManager.GetBullet(BulletType.PLAYERBULLET);
+           GameObject bullet = BulletManager.Instance().GetBullet(BulletType.PLAYERBULLET);
             bullet.transform.position = _bulletPoint.position;
             count = 0;
         }

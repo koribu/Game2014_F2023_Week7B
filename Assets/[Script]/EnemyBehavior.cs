@@ -25,8 +25,6 @@ public class EnemyBehavior : MonoBehaviour
     GameObject _bullet;
 
     int count = 0;
-
-    BulletManager _bulletManager;
     GameController _gameController;
 
     [SerializeField]
@@ -37,7 +35,6 @@ public class EnemyBehavior : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        _bulletManager = FindAnyObjectByType<BulletManager>();
         _gameController = FindAnyObjectByType<GameController>();
         _defaultSize = transform.localScale;
         Reset();
@@ -82,7 +79,7 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (count > 10)
         {
-            GameObject bullet = _bulletManager.GetBullet(BulletType.ENEMYBULLET);
+            GameObject bullet = BulletManager.Instance().GetBullet(BulletType.ENEMYBULLET);
             bullet.transform.position = _bulletPoint.position;
             
             count = 0;

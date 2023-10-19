@@ -2,8 +2,34 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BulletManager : MonoBehaviour
+public class BulletManager
 {
+    /************************SINGLETON SECTION***************************/
+    //Step 1. Private Static Instance
+    private static BulletManager instance;
+
+    //Step 2. Make the Constructor Private
+    private BulletManager()
+    {
+
+    }
+
+    //Step 3. Public Static Creational Method
+    public static BulletManager Instance()
+    {
+        if(instance == null)
+        {
+            instance = new BulletManager();
+        }
+        return instance;
+    }
+
+
+    /************************SINGLETON SECTION***************************/
+
+
+
+
     [SerializeField]
     private int _playerBulletTotal = 10;
 
@@ -13,14 +39,14 @@ public class BulletManager : MonoBehaviour
     Queue<GameObject> _playerBulletPool = new Queue<GameObject>();
     Queue<GameObject> _enemyBulletPool = new Queue<GameObject>();
 
-    BulletFactory _factory;
-
     GameObject _bulletPrefab;
     // Start is called before the first frame update
     void Start()
     {
         _bulletPrefab = Resources.Load<GameObject>("Prefabs/Bullet");
-        _factory = FindAnyObjectByType<BulletFactory>();
+       /* _factory = FindAnyObjectByType<BulletFactory>();*/
+       
+
 
         PoolBuilder();
     }
@@ -33,13 +59,13 @@ public class BulletManager : MonoBehaviour
         for (int i = 0; i < _playerBulletTotal; i++)
         {
             //Create a bullet
-            GameObject bullet = _factory.CreateBullet(BulletType.PLAYERBULLET);
+            GameObject bullet = BulletFactory.Instance().CreateBullet(BulletType.PLAYERBULLET); //_factory.CreateBullet(BulletType.PLAYERBULLET);
             _playerBulletPool.Enqueue(bullet);
         }
         for (int i = 0; i < _enemyBulletTotal; i++)
         {
             //Create an enemy bullet and add to enemy bullet queue
-            GameObject bullet = _factory.CreateBullet(BulletType.ENEMYBULLET);
+            GameObject bullet = BulletFactory.Instance().CreateBullet(BulletType.ENEMYBULLET);
             _enemyBulletPool.Enqueue(bullet);
         }
 
@@ -65,7 +91,7 @@ public class BulletManager : MonoBehaviour
                 //give player bullet
                 if(_playerBulletPool.Count <= 1)
                 {
-                    _playerBulletPool.Enqueue(_factory.CreateBullet(BulletType.PLAYERBULLET));
+                    _playerBulletPool.Enqueue(BulletFactory.Instance().CreateBullet(BulletType.PLAYERBULLET));
                 }
 
                 bullet = _playerBulletPool.Dequeue();
@@ -75,7 +101,7 @@ public class BulletManager : MonoBehaviour
                 //give enemy bullet
                 if(_enemyBulletPool.Count <= 1)
                 {
-                    _playerBulletPool.Enqueue(_factory.CreateBullet(BulletType.ENEMYBULLET));
+                    _enemyBulletPool.Enqueue(BulletFactory.Instance().CreateBullet(BulletType.ENEMYBULLET));
                 }
 
                 bullet = _enemyBulletPool.Dequeue();
